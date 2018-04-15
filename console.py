@@ -1,10 +1,9 @@
-from login import login, register
-from reminder import addReminder
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from db_declarative import Base, User, Reminder, Notification
 
-currentUser = None
-
-def userFunctions(currentUser):
-    # print("User Functions")
+def userFunctions(currentUser, session):
     print("****************************************")
     print("Logged in as : ",currentUser.username)
     print("****************************************")
@@ -12,6 +11,7 @@ def userFunctions(currentUser):
     print("Press 2 to Exit")
     choice = input("Your choice : ")
     print("****************************************")
+
     if (choice=='1'):
         type = input("Enter reminder type : ")
         text = input("Enter reminder text : ")
@@ -21,12 +21,20 @@ def userFunctions(currentUser):
         time['month'] = input("Month of reminder : ")
         time['day'] = input("Day of month reminder : ")
         time['year'] = input("Enter year of reminder : ")
-        addReminder(currentUser.userid, type, text, time)
-
+        Reminder.addReminder(session, currentUser.userid, type, text, time)
     elif (choice=='2'):
         exit()
 
 def main():
+
+    engine = create_engine('sqlite:///reminderSystem.db')
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+
+    if(os.fork()==0):
+        os.system('python3 ./notify.py')
+
     print("****************************************")
     print("Press 1 to Login.")
     print("Press 2 to Register")
@@ -34,15 +42,15 @@ def main():
     choice = input("Your choice : ")
     print("****************************************")
     if(choice=='1'):
-        currentUser = login()
+        currentUser = User.login(session)
         if (currentUser==None):
             print("****************************************")
             print ("Please enter correct credentials")
             print("****************************************")
         else:
-            userFunctions(currentUser)
+            userFunctions(currentUser, session)
     elif(choice == '2'):
-        currentUser = register()
+        currentUser = User.register(session)
         if (currentUser==None):
             print("****************************************")
             print ("Please enter proper credentials")
@@ -51,7 +59,7 @@ def main():
             print("****************************************")
             print ("Registered successfully")
             print("****************************************")
-            userFunctions(currentUser)
+            userFunctions(currentUser, session)
     elif (choice=='3'):
         exit()
     else:
