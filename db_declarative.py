@@ -89,11 +89,8 @@ class Notification(Base):
         reminderList = session.query(Reminder).all()
         for reminder in reminderList:
             if (reminder.time.hour == datetime.datetime.now().hour and reminder.time.minute == datetime.datetime.now().minute):
-                # print(reminder.text, reminder.time.minute)
                 os.system('notify-send "'+reminder.text+'"')
-                # exit()
         return
-
 
 class Dispatcher(Base):
     __tablename__ = 'dispatcher'
@@ -107,6 +104,15 @@ class Authentication(Base):
     userID = Column(Integer, ForeignKey('user.userid'), primary_key=True)
     authType = Column(String(50))
     credentials = Column(String(250))
+
+class Biometrics(Base):
+    __tablename__ = 'biometrics'
+    userID = Column(Integer, ForeignKey('user.userid'), primary_key=True)
+    workhours = Column(Integer)
+    heartRate = Column(Integer)
+    bedTime = Column(DateTime)
+    age = Column(Integer)
+    bmi = Column(Numeric)
 
 engine = create_engine('sqlite:///reminderSystem.db')
 Base.metadata.create_all(engine)
