@@ -8,7 +8,8 @@ def userFunctions(currentUser, session):
     print("Logged in as : ",currentUser.username)
     print("****************************************")
     print("Press 1 to create a new reminder")
-    print("Press 2 to Exit")
+    print("Press 2 to view all reminders")
+    print("Press 3 to Exit")
     choice = input("Your choice : ")
     print("****************************************")
 
@@ -22,7 +23,11 @@ def userFunctions(currentUser, session):
         time['day'] = input("Day of month reminder : ")
         time['year'] = input("Enter year of reminder : ")
         Reminder.addReminder(session, currentUser.userid, type, text, time)
+        userFunctions(currentUser, session)
     elif (choice=='2'):
+        User.viewReminders(currentUser, session)
+        userFunctions(currentUser, session)
+    elif (choice=='3'):
         exit()
 
 def main():

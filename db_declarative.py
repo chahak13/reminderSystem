@@ -39,6 +39,82 @@ class User(Base):
         new_user = session.query(User).filter(User.username == uname).first()
         return new_user
 
+    @staticmethod
+    def viewReminders(currentUser, session):
+        reminderList = session.query(Reminder).filter(Reminder.userID==currentUser.userid).all()
+        counter = 1
+        for reminder in reminderList:
+            print(counter,')', reminder.text)
+
+        return
+
+    @staticmethod
+    def authenticateUser():
+        '''
+        This function authenticates the user at the time of editing reminders by making use of the Authentication class.
+        '''
+        return
+
+    def addReminder():
+        '''
+        Add new reminder for the user
+        '''
+        return
+
+    def editReminder():
+        '''
+        Edit existing reminders.
+        '''
+        return
+
+    def editBiometrics():
+        '''
+        Edit the biometric details present in the Biometrics class.
+        '''
+        return
+
+    def requestFriend():
+        '''
+        Request a friend for reminder.
+        '''
+        return
+
+    def rateFriend():
+        '''
+        Rate a friend based on their response to a reminder request.
+        '''
+        return
+
+    def respondToFriend():
+        '''
+        Respond to a friend who has requested to be reminded about a reminder.
+        '''
+        return
+
+    def acknowledgeRequest():
+        '''
+        Acknowledge the request made by a friend.
+        '''
+        return
+
+    def declineRequest():
+        '''
+        Decline the request made by a friend.
+        '''
+        return
+
+    def receiveNotification():
+        '''
+        Receive notifications from the system.
+        '''
+        return
+
+    def resoindToNotification():
+        '''
+        Respond to the notification obtained by receiveNotification method.
+        '''
+        return
+
 
 class Reminder(Base):
     __tablename__ = 'reminder'
@@ -70,6 +146,24 @@ class Reminder(Base):
 
         return
 
+    def deleteReminder():
+        '''
+        Deletes the reminder from the database
+        '''
+        return
+
+    def updateReminder():
+        '''
+        Edits and updates the reminders in the database
+        '''
+        return
+
+    def searchTag():
+        '''
+        Provides improved functionality of being able to search for a reminder using tags
+        '''
+        return
+
 
 class Friend(Base):
     __tablename__ = 'friend'
@@ -77,6 +171,65 @@ class Friend(Base):
     friendName = Column(String(250), ForeignKey('user.username'))
     friendEmail = Column(String(250), ForeignKey('user.userEmail'))
     friendPhoneNumber = Column(String(15), ForeignKey('user.phoneNumber'))
+
+    def request():
+        '''
+        Provides the user with functionality to request a people based reminder from a friend
+        '''
+        return
+
+    def updateRating():
+        '''
+        Provids the user with functionality to rate the friend on a scale of 1 to 5. 1 indicating poor service and 5 indicating good service.
+        '''
+        return
+
+class Sensor(Base):
+    __tablename__ = 'sensor'
+    SensorID = Column(Integer, primary_key=True)
+    SensorData = Column(String(15))
+
+    def sense():
+        '''
+        an absract method to calculate, measure and return sensor data
+        '''
+        return
+
+class HeartRateSensor(Base):
+    __tablename__ = 'heartratesensor'
+    SensorID = Column(Integer, primary_key=True)
+    heartRate = Column(String(15))
+
+    def sense():
+        '''
+        Mesure and send heartrate
+        '''
+        return heartRate
+
+class GPSSensor(Base):
+    __tablename__ = 'gpssensor'
+    SensorID = Column(Integer, primary_key=True)
+    longitude = Column(Integer)
+    latitude = Column(Integer)
+
+    def sense():
+        '''
+        Mesure and send location
+        '''
+        return (latitude, longitude)
+
+class WeatherAPI(Base):
+    __tablename__ = 'weatherapi'
+    location = Column(Integer)
+    apiKey = Column(String(50), primary_key=True)
+    weatherData = Column(String(100))
+
+    def getWeather():
+        '''
+        This call returns the current weather details, fetched from the WeatherAPI Object
+        '''
+        return weatherData
+
 
 class Notification(Base):
     __tablename__ = 'notification'
@@ -112,7 +265,7 @@ class Biometrics(Base):
     heartRate = Column(Integer)
     bedTime = Column(DateTime)
     age = Column(Integer)
-    bmi = Column(Numeric)
+    bmi = Column(Integer)
 
 engine = create_engine('sqlite:///reminderSystem.db')
 Base.metadata.create_all(engine)
